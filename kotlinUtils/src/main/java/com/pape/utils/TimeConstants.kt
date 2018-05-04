@@ -8,11 +8,11 @@ import android.support.annotation.IntDef
  */
 class TimeConstants {
     companion object TimeConstants {
-        const val MSEC: Long = 1
-        const val SEC: Long = 1000
-        const val MIN: Long = 60000
-        const val HOUR: Long = 3600000
-        const val DAY: Long = 86400000
+        const val MSEC: Int = 1
+        const val SEC: Int = 1000
+        const val MIN: Int = 60000
+        const val HOUR: Int = 3600000
+        const val DAY: Int = 86400000
     }
 
     @IntDef(TimeConstants.MSEC, TimeConstants.SEC, TimeConstants.MIN, TimeConstants.HOUR, TimeConstants.DAY)
