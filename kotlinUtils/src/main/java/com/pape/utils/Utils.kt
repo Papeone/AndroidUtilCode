@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import java.lang.ref.WeakReference
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 
@@ -12,6 +13,7 @@ import java.util.*
  */
 object Utils {
 
+    private var app: WeakReference<Application>? = null
     private val ACTIVITY_LIST = LinkedList<Activity>()
 
     private val mCallbacks = object : Application.ActivityLifecycleCallbacks {
@@ -48,7 +50,12 @@ object Utils {
      * 工具初始化
      */
     fun init(app: Application) {
+        this.app = WeakReference(app)
         app.registerActivityLifecycleCallbacks(mCallbacks)
+    }
+
+    fun getApp(): Application? {
+        return app?.get()
     }
 
     internal fun setTopActivity(activity: Activity) {
