@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import java.lang.ref.WeakReference
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 
@@ -11,6 +12,10 @@ import java.util.*
  * Created by zhangzhanyong on 2018/4/19.
  */
 object Utils {
+
+    private var mApplication: Application? = null
+
+    internal var mTopActivityWeakRef: WeakReference<Activity>? = null
 
     private val ACTIVITY_LIST = LinkedList<Activity>()
 
@@ -109,6 +114,24 @@ object Utils {
         }
 
         return null
+    }
+
+    /**
+     * Return the context of Application object.
+     *
+     * @return the context of Application object
+     */
+    val app: Application
+        get() {
+            if (mApplication != null) return mApplication!!
+            throw NullPointerException("u should init first")
+        }
+
+    private fun setTopActivityWeakRef(activity: Activity) {
+        if (activity.javaClass == PermissionUtils.PermissionActivity::class.java) return
+        if (mTopActivityWeakRef == null || activity != mTopActivityWeakRef!!.get()) {
+            mTopActivityWeakRef = WeakReference(activity)
+        }
     }
 
 }
