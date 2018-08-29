@@ -13,10 +13,7 @@ import java.util.*
  */
 object Utils {
 
-    private var mApplication: Application? = null
-
-    internal var mTopActivityWeakRef: WeakReference<Activity>? = null
-
+    private var app: WeakReference<Application>? = null
     private val ACTIVITY_LIST = LinkedList<Activity>()
 
     private val mCallbacks = object : Application.ActivityLifecycleCallbacks {
@@ -53,7 +50,12 @@ object Utils {
      * 工具初始化
      */
     fun init(app: Application) {
+        this.app = WeakReference(app)
         app.registerActivityLifecycleCallbacks(mCallbacks)
+    }
+
+    fun getApp(): Application? {
+        return app?.get()
     }
 
     internal fun setTopActivity(activity: Activity) {
@@ -114,24 +116,6 @@ object Utils {
         }
 
         return null
-    }
-
-    /**
-     * Return the context of Application object.
-     *
-     * @return the context of Application object
-     */
-    val app: Application
-        get() {
-            if (mApplication != null) return mApplication!!
-            throw NullPointerException("u should init first")
-        }
-
-    private fun setTopActivityWeakRef(activity: Activity) {
-        if (activity.javaClass == PermissionUtils.PermissionActivity::class.java) return
-        if (mTopActivityWeakRef == null || activity != mTopActivityWeakRef!!.get()) {
-            mTopActivityWeakRef = WeakReference(activity)
-        }
     }
 
 }

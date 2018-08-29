@@ -50,7 +50,7 @@ class PermissionUtils private constructor(vararg permissions: String) {
          * @return the permissions used in application
          */
         val permissions: List<String>
-            get() = getPermissions(Utils.app.packageName)
+            get() = getPermissions(Utils.getApp()?.packageName!!)
 
         /**
          * Return the permissions used in application.
@@ -59,11 +59,10 @@ class PermissionUtils private constructor(vararg permissions: String) {
          * @return the permissions used in application
          */
         fun getPermissions(packageName: String): List<String> {
-            val pm = Utils.app.packageManager
+            val pm = Utils.getApp()?.packageManager
             try {
                 return Arrays.asList(
-                        *pm.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
-                                .requestedPermissions
+                        *pm?.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)?.requestedPermissions
                 )
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
@@ -83,7 +82,7 @@ class PermissionUtils private constructor(vararg permissions: String) {
         }
 
         private fun isGranted(permission: String): Boolean {
-            return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(Utils.app, permission)
+            return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || PackageManager.PERMISSION_GRANTED == Utils.getApp()?.let { ContextCompat.checkSelfPermission(it, permission) }
         }
 
         /**
@@ -91,8 +90,8 @@ class PermissionUtils private constructor(vararg permissions: String) {
          */
         fun openAppSettings() {
             val intent = Intent("android.settings.APPLICATION_DETAILS_SETTINGS")
-            intent.data = Uri.parse("package:" + Utils.app.packageName)
-            Utils.app.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            intent.data = Uri.parse("package:" + Utils.getApp()?.packageName)
+            Utils.getApp()?.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }
 
         /**
@@ -178,7 +177,7 @@ class PermissionUtils private constructor(vararg permissions: String) {
     private fun startPermissionActivity() {
         mPermissionsDenied = ArrayList()
         mPermissionsDeniedForever = ArrayList()
-        PermissionActivity.start(Utils.app)
+        PermissionActivity.start(Utils.getApp()!!)
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

@@ -212,11 +212,11 @@ object ToastUtils {
     }
 
     private fun show(@StringRes resId: Int, duration: Int) {
-        show(Utils.app.resources.getText(resId).toString(), duration)
+        show(Utils.getApp()?.resources?.getText(resId).toString(), duration)
     }
 
     private fun show(@StringRes resId: Int, duration: Int, vararg args: Any) {
-        show(String.format(Utils.app.resources.getString(resId), *args), duration)
+        show(String.format(Utils.getApp()?.resources?.getString(resId)!!, *args), duration)
     }
 
     private fun show(format: String, duration: Int, vararg args: Any) {
@@ -226,7 +226,7 @@ object ToastUtils {
     private fun show(text: CharSequence, duration: Int) {
         HANDLER.post {
             cancel()
-            sToast = Toast.makeText(Utils.app, text, duration)
+            sToast = Toast.makeText(Utils.getApp(), text, duration)
             val tvMessage = sToast!!.view.findViewById<TextView>(android.R.id.message)
             val msgColor = tvMessage.currentTextColor
             //it solve the font of toast
@@ -250,7 +250,7 @@ object ToastUtils {
     private fun show(view: View?, duration: Int) {
         HANDLER.post {
             cancel()
-            sToast = Toast(Utils.app)
+            sToast = Toast(Utils.getApp())
             sToast!!.view = view
             sToast!!.duration = duration
             if (sGravity != -1 || sXOffset != -1 || sYOffset != -1) {
@@ -297,7 +297,7 @@ object ToastUtils {
     }
 
     private fun getView(@LayoutRes layoutId: Int): View? {
-        val inflate = Utils.app.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as? LayoutInflater
+        val inflate = Utils.getApp()?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as? LayoutInflater
         return inflate?.inflate(layoutId, null)
     }
 }
